@@ -34,7 +34,7 @@ const RndGen = std.rand.DefaultPrng;
 const Allocator = std.mem.Allocator;
 const ArrayList = std.ArrayList;
 
-const MM = error{
+const MasterMindError = error{
     Oops,
     InputTooLong,
     InputTooShort,
@@ -123,14 +123,14 @@ fn getUserInput(alloc: Allocator) ![]u8 {
     if (msg) |m| {
         if (m.len < 4) {
             alloc.free(m);
-            return MM.InputTooShort;
+            return MasterMindError.InputTooShort;
         } else if (m.len > 4) {
             alloc.free(m);
-            return MM.InputTooLong;
+            return MasterMindError.InputTooLong;
         }
         return m;
     } else {
-        return MM.Oops;
+        return MasterMindError.Oops;
     }
 }
 
