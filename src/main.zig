@@ -118,6 +118,18 @@ fn generateRandomInt() u16 {
     return some_random_num;
 }
 
+test "generateRandomInt" {
+    const testCases = [_]u16{
+        generateRandomInt(),
+        generateRandomInt(),
+        generateRandomInt(),
+    };
+
+    for (testCases) |rn| {
+        try std.testing.expect(rn >= 1000 and rn <= 9999);
+    }
+}
+
 fn sliceOfDigits(four_digit_number: u16) [4]u8 {
     const magic_number = four_digit_number;
     const magic_number_one = magic_number / 1000;
@@ -132,3 +144,20 @@ fn sliceOfDigits(four_digit_number: u16) [4]u8 {
         @truncate(magic_number_four),
     };
 }
+
+test "sliceOfDigits" {
+    const testCases = [_]SliceOfDigitsTestCases{
+        .{ .actual = sliceOfDigits(1234), .expected = [4]u8{ 1, 2, 3, 4 } },
+        .{ .actual = sliceOfDigits(8023), .expected = [4]u8{ 8, 0, 2, 3 } },
+        .{ .actual = sliceOfDigits(71), .expected = [4]u8{ 0, 0, 7, 1 } },
+    };
+
+    for (testCases) |tc| {
+        try std.testing.expectEqual(tc.expected, tc.actual);
+    }
+}
+
+const SliceOfDigitsTestCases = struct {
+    actual: [4]u8,
+    expected: [4]u8,
+};
