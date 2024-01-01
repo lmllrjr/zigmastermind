@@ -41,7 +41,7 @@ pub fn main() anyerror!void {
     const gpalloc = gpa.allocator();
 
     // generate the code that needs to be cracked by the code breaker
-    const code = sliceOfDigits(generateRandomU16());
+    const code = splitDigits(generateRandomU16());
 
     var counter: u8 = 0;
 
@@ -76,7 +76,7 @@ pub fn main() anyerror!void {
         counter += 1;
 
         const codebreaker_num = try std.fmt.parseInt(u16, input, 10);
-        const codebreaker_sequence = sliceOfDigits(codebreaker_num);
+        const codebreaker_sequence = splitDigits(codebreaker_num);
         var list = ArrayList(u8).init(gpalloc);
         defer list.deinit();
         for (codebreaker_sequence) |n| {
@@ -130,7 +130,7 @@ test "generateRandomU16" {
     }
 }
 
-fn sliceOfDigits(four_digit_number: u16) [4]u8 {
+fn splitDigits(four_digit_number: u16) [4]u8 {
     const magic_number = four_digit_number;
     const magic_number_one = magic_number / 1000;
     const magic_number_two = magic_number / 100 - magic_number_one * 10;
@@ -145,11 +145,11 @@ fn sliceOfDigits(four_digit_number: u16) [4]u8 {
     };
 }
 
-test "sliceOfDigits" {
+test "splitDigits" {
     const testCases = [_]SliceOfDigitsTestCases{
-        .{ .actual = sliceOfDigits(1234), .expected = [4]u8{ 1, 2, 3, 4 } },
-        .{ .actual = sliceOfDigits(8023), .expected = [4]u8{ 8, 0, 2, 3 } },
-        .{ .actual = sliceOfDigits(71), .expected = [4]u8{ 0, 0, 7, 1 } },
+        .{ .actual = splitDigits(1234), .expected = [4]u8{ 1, 2, 3, 4 } },
+        .{ .actual = splitDigits(8023), .expected = [4]u8{ 8, 0, 2, 3 } },
+        .{ .actual = splitDigits(71), .expected = [4]u8{ 0, 0, 7, 1 } },
     };
 
     for (testCases) |tc| {
