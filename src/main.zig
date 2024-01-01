@@ -34,12 +34,6 @@ const RndGen = std.rand.DefaultPrng;
 const Allocator = std.mem.Allocator;
 const ArrayList = std.ArrayList;
 
-const MasterMindError = error{
-    Oops,
-    InputTooLong,
-    InputTooShort,
-};
-
 pub fn main() anyerror!void {
     // create general purpose allocator
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -48,7 +42,6 @@ pub fn main() anyerror!void {
 
     // generate the code that needs to be cracked by the code breaker
     const code = sliceOfDigits(generateRandomInt());
-    // try stdout.print("code: {d}\n", .{code});
 
     var counter: u8 = 0;
 
@@ -62,20 +55,23 @@ pub fn main() anyerror!void {
             break;
         }
 
-        const input = getUserInput(gpalloc) catch |err| switch (err) {
-            error.InputTooLong => {
-                // try stdout.print("input too long please try again: {!}\n", .{err});
+        // get user input
+        const raw_input = try stdin.readUntilDelimiterOrEofAlloc(gpalloc, '\n', 8192);
+        var input: []u8 = undefined;
+
+        if (raw_input) |m| {
+            if (m.len < 4) {
+                gpalloc.free(m);
                 continue;
-            },
-            error.InputTooShort => {
-                // try stdout.print("input too short please try again: {!}\n", .{err});
+            } else if (m.len > 4) {
+                gpalloc.free(m);
                 continue;
-            },
-            else => {
-                try stdout.print("\n\nend program\n", .{});
-                break;
-            },
-        };
+            }
+            input = m;
+        } else {
+            try stdout.print("\n\nend program\n", .{});
+            break;
+        }
         defer gpalloc.free(input);
         counter += 1;
 
@@ -113,24 +109,6 @@ pub fn main() anyerror!void {
             try stdout.print("\ncode cracked \n", .{});
             break;
         }
-    }
-}
-
-fn getUserInput(alloc: Allocator) ![]u8 {
-    // try stdout.print("\n> ", .{});
-    const msg = try stdin.readUntilDelimiterOrEofAlloc(alloc, '\n', 8192);
-
-    if (msg) |m| {
-        if (m.len < 4) {
-            alloc.free(m);
-            return MasterMindError.InputTooShort;
-        } else if (m.len > 4) {
-            alloc.free(m);
-            return MasterMindError.InputTooLong;
-        }
-        return m;
-    } else {
-        return MasterMindError.Oops;
     }
 }
 
