@@ -131,17 +131,17 @@ test "generateRandomU16" {
 }
 
 fn splitDigits(four_digit_number: u16) [4]u8 {
-    const magic_number = four_digit_number;
-    const magic_number_one = magic_number / 1000;
-    const magic_number_two = magic_number / 100 - magic_number_one * 10;
-    const magic_number_three = magic_number / 10 - magic_number_one * 100 - magic_number_two * 10;
-    const magic_number_four = magic_number - magic_number_one * 1000 - magic_number_two * 100 - magic_number_three * 10;
+    const n = four_digit_number;
+    const n1 = n / 1000;
+    const n2 = n / 100 - n1 * 10;
+    const n3 = n / 10 - n1 * 100 - n2 * 10;
+    const n4 = n - n1 * 1000 - n2 * 100 - n3 * 10;
 
     return [4]u8{
-        @truncate(magic_number_one),
-        @truncate(magic_number_two),
-        @truncate(magic_number_three),
-        @truncate(magic_number_four),
+        @truncate(n1),
+        @truncate(n2),
+        @truncate(n3),
+        @truncate(n4),
     };
 }
 
