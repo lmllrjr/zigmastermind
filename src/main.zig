@@ -41,7 +41,7 @@ pub fn main() anyerror!void {
     const gpalloc = gpa.allocator();
 
     // generate the code that needs to be cracked by the code breaker
-    const code = sliceOfDigits(generateRandomInt());
+    const code = sliceOfDigits(generateRandomU16());
 
     var counter: u8 = 0;
 
@@ -112,17 +112,17 @@ pub fn main() anyerror!void {
     }
 }
 
-fn generateRandomInt() u16 {
+fn generateRandomU16() u16 {
     var rnd = RndGen.init(@intCast(std.time.timestamp()));
     const some_random_num = @mod(rnd.random().int(u16), 9999);
     return some_random_num;
 }
 
-test "generateRandomInt" {
+test "generateRandomU16" {
     const testCases = [_]u16{
-        generateRandomInt(),
-        generateRandomInt(),
-        generateRandomInt(),
+        generateRandomU16(),
+        generateRandomU16(),
+        generateRandomU16(),
     };
 
     for (testCases) |rn| {
