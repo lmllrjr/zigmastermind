@@ -56,7 +56,10 @@ pub fn main() anyerror!void {
         }
 
         // get user input
-        const raw_input = try stdin.readUntilDelimiterOrEofAlloc(gpalloc, '\n', 8192);
+        const raw_input = stdin.readUntilDelimiterOrEofAlloc(gpalloc, '\n', 5) catch |err| switch (err) {
+            else => continue,
+        };
+
         var input: []u8 = undefined;
 
         if (raw_input) |m| {
